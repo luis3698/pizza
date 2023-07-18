@@ -1,0 +1,70 @@
+body {
+    padding-top: 20px;
+    margin-top: 56px; /* Margen superior para evitar que el contenido se superponga con la barra de navegación */
+    background-color: #f0b000; /* Color de fondo sugerido */
+  }
+
+  header {
+    padding-bottom: 20px;
+  }
+
+  h2 {
+    color: #2b3136;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .btn-primary {
+    background-color: #2b3136;
+    border-color: #2b3136;
+  }
+
+  .btn-primary:hover {
+    background-color: #2b3136;
+    border-color: #2b3136;
+    opacity: 0.8;
+  }
+
+  .btn-success {
+    background-color: #25d366;
+    border-color: #25d366;
+  }
+
+  .btn-success:hover {
+    background-color: #128c7e;
+    border-color: #128c7e;
+  }
+
+  table img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .alert-success {
+    background-color: #eb8f05; /* Color de fondo para el mensaje de confirmación */
+    border-color: #eb8f05;
+    color: #2b3136;
+    font-weight: bold;
+  }
+
+  /* Estilos para la barra de navegación */
+  .navbar.navbar-light {
+    background-color: #2b3136; /* Color de fondo de la barra de navegación (negro en este caso) */
+  }
+
+  .navbar .navbar-nav .nav-item {
+    margin-right: 10px;
+  }
+
+  .navbar .nav-link {
+    color: #ebe4e4 !important; /* Color del texto de los enlaces de navegación (blanco en este caso) */
+    font-weight: bold;
+  }
+
+  .navbar .nav-link:hover {
+    color: #fffcfc !important; /* Color del texto de enlaces de navegación en hover (blanco en este caso) */
+    opacity: 0.8; /* Opacidad reducida al hacer hover */
+  }
+  .navbar.navbar-light {
+    background-color: #4c5661 !important; /* Color de fondo de la barra de navegación (azul en este caso) */
+  }

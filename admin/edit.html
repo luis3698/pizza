@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pizzería - Productos</title>
+  
+  <!-- Agregar enlace a Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesEdit.css">
+ 
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="admin.html">inicio</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <section id="productos">
+        <h2>Productos</h2>
+
+        <div id="lista-pizzas">
+          <h3>Pizzas</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th></th>
+                <th></th> <!-- Nueva columna para el botón de editar -->
+                <th></th> <!-- Nueva columna para el botón de eliminar -->
+              </tr>
+            </thead>
+            <tbody id="tabla-pizzas"></tbody>
+          </table>
+        </div>
+
+        <div id="lista-bebidas">
+          <h3>Bebidas</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th></th>
+                <th></th> <!-- Nueva columna para el botón de editar -->
+                <th></th> <!-- Nueva columna para el botón de eliminar -->
+              </tr>
+            </thead>
+            <tbody id="tabla-bebidas"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container text-center">
+    <p>© 2023 Pizzería. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Agregar los scripts de Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-storage.js"></script>
+  <script src="../config.js"></script>
+
+  <script>
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Obtener una referencia a la base de datos
+    var db = firebase.firestore();
+    // Obtener una referencia al almacenamiento de Firebase
+    var storage = firebase.storage();
+
+    // Escuchar el evento 'DOMContentLoaded' para cargar los datos de la base de datos
+    document.addEventListener('DOMContentLoaded', function() {
+      updateProductosList();
+    });
+
+    function updateProductosList() {
+      var tablaPizzas = document.getElementById('tabla-pizzas');
+      // Eliminar las filas existentes en la tabla de pizzas
+      while (tablaPizzas.firstChild) {
+        tablaPizzas.removeChild(tablaPizzas.firstChild);
+      }
+
+      var tablaBebidas = document.getElementById('tabla-bebidas');
+      // Eliminar las filas existentes en la tabla de bebidas
+      while (tablaBebidas.firstChild) {
+        tablaBebidas.removeChild(tablaBebidas.firstChild);
+      }
+
+      // Obtener todas las pizzas del menú y agregarlas a la tabla de pizzas
+      db.collection('menu-pizzas').get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var pizza = doc.data();
+            var fila = createPizzaRow(pizza, doc.id);
+            tablaPizzas.appendChild(fila);
+          });
+        })
+        .catch(function(error) {
+          console.error('Error al obtener las pizzas:', error);
+        });
+
+      // Obtener todas las bebidas del menú y agregarlas a la tabla de bebidas
+      db.collection('menu-bebidas').get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var bebida = doc.data();
+            var fila = createBebidaRow(bebida, doc.id);
+            tablaBebidas.appendChild(fila);
+          });
+        })
+        .catch(function(error) {
+          console.error('Error al obtener las bebidas:', error);
+        });
+    }
+
+    function createPizzaRow(pizza, id) {
+      var fila = document.createElement('tr');
+
+      var nombreCelda = document.createElement('td');
+      nombreCelda.textContent = pizza.nombre;
+      fila.appendChild(nombreCelda);
+
+      var descripcionCelda = document.createElement('td');
+      descripcionCelda.textContent = pizza.descripcion || '-';
+      fila.appendChild(descripcionCelda);
+
+      var precioCelda = document.createElement('td');
+      precioCelda.textContent = pizza.precio;
+      fila.appendChild(precioCelda);
+
+      var imagenCelda = document.createElement('td');
+      var imagen = document.createElement('img');
+      imagen.src = pizza.imagen;
+      imagenCelda.appendChild(imagen);
+      fila.appendChild(imagenCelda);
+
+      var editarCelda = document.createElement('td');
+      var editarBtn = document.createElement('button');
+      editarBtn.textContent = 'Editar';
+      editarBtn.classList.add('btn', 'btn-primary');
+      editarBtn.addEventListener('click', function() {
+        mostrarFormularioEdicion(id, 'menu-pizzas', pizza);
+      });
+      editarCelda.appendChild(editarBtn);
+      fila.appendChild(editarCelda);
+
+      var eliminarCelda = document.createElement('td');
+      var eliminarBtn = document.createElement('button');
+      eliminarBtn.textContent = 'Eliminar';
+      eliminarBtn.classList.add('btn', 'btn-danger');
+      eliminarBtn.addEventListener('click', function() {
+        eliminarProducto(id, 'menu-pizzas');
+      });
+      eliminarCelda.appendChild(eliminarBtn);
+      fila.appendChild(eliminarCelda);
+
+      return fila;
+    }
+
+    function createBebidaRow(bebida, id) {
+      var fila = document.createElement('tr');
+
+      var nombreCelda = document.createElement('td');
+      nombreCelda.textContent = bebida.nombre;
+      fila.appendChild(nombreCelda);
+
+      var descripcionCelda = document.createElement('td');
+      descripcionCelda.textContent = bebida.descripcion || '-';
+      fila.appendChild(descripcionCelda);
+
+      var precioCelda = document.createElement('td');
+      precioCelda.textContent = bebida.precio;
+      fila.appendChild(precioCelda);
+
+      var imagenCelda = document.createElement('td');
+      var imagen = document.createElement('img');
+      imagen.src = bebida.imagen;
+      imagenCelda.appendChild(imagen);
+      fila.appendChild(imagenCelda);
+
+      var editarCelda = document.createElement('td');
+      var editarBtn = document.createElement('button');
+      editarBtn.textContent = 'Editar';
+      editarBtn.classList.add('btn', 'btn-primary');
+      editarBtn.addEventListener('click', function() {
+        mostrarFormularioEdicion(id, 'menu-bebidas', bebida);
+      });
+      editarCelda.appendChild(editarBtn);
+      fila.appendChild(editarCelda);
+
+      var eliminarCelda = document.createElement('td');
+      var eliminarBtn = document.createElement('button');
+      eliminarBtn.textContent = 'Eliminar';
+      eliminarBtn.classList.add('btn', 'btn-danger');
+      eliminarBtn.addEventListener('click', function() {
+        eliminarProducto(id, 'menu-bebidas');
+      });
+      eliminarCelda.appendChild(eliminarBtn);
+      fila.appendChild(eliminarCelda);
+
+      return fila;
+    }
+
+    function mostrarFormularioEdicion(id, coleccion, producto) {
+      var formulario = document.createElement('form');
+      formulario.classList.add('formulario-edicion');
+      formulario.addEventListener('submit', function(event) {
+        event.preventDefault();
+        guardarEdicion(id, coleccion, formulario);
+      });
+
+      var nombreLabel = document.createElement('label');
+      nombreLabel.textContent = 'Nombre:';
+      var nombreInput = document.createElement('input');
+      nombreInput.type = 'text';
+      nombreInput.value = producto.nombre;
+      formulario.appendChild(nombreLabel);
+      formulario.appendChild(nombreInput);
+
+      var descripcionLabel = document.createElement('label');
+      descripcionLabel.textContent = 'Descripción:';
+      var descripcionInput = document.createElement('textarea');
+      descripcionInput.value = producto.descripcion || '';
+      formulario.appendChild(descripcionLabel);
+      formulario.appendChild(descripcionInput);
+
+      var precioLabel = document.createElement('label');
+      precioLabel.textContent = 'Precio:';
+      var precioInput = document.createElement('input');
+      precioInput.type = 'number';
+      precioInput.value = producto.precio;
+      formulario.appendChild(precioLabel);
+      formulario.appendChild(precioInput);
+
+      var imagenLabel = document.createElement('label');
+      imagenLabel.textContent = 'Imagen:';
+      var imagenInput = document.createElement('input');
+      imagenInput.type = 'file';
+      formulario.appendChild(imagenLabel);
+      formulario.appendChild(imagenInput);
+
+      var guardarBtn = document.createElement('button');
+      guardarBtn.textContent = 'Guardar';
+      guardarBtn.type = 'submit';
+      guardarBtn.classList.add('btn', 'btn-primary');
+      formulario.appendChild(guardarBtn);
+
+      var cancelarBtn = document.createElement('button');
+      cancelarBtn.textContent = 'Cancelar';
+      cancelarBtn.type = 'button';
+      cancelarBtn.classList.add('btn', 'btn-secondary');
+      cancelarBtn.addEventListener('click', function() {
+        formulario.remove();
+      });
+      formulario.appendChild(cancelarBtn);
+
+      var container = document.querySelector('.container');
+      container.appendChild(formulario);
+    }
+
+    function guardarEdicion(id, coleccion, formulario) {
+      var nombre = formulario.elements[0].value;
+      var descripcion = formulario.elements[1].value;
+      var precio = formulario.elements[2].value;
+      var imagenInput = formulario.elements[3];
+
+      // Verificar si se seleccionó una imagen
+      if (imagenInput.files.length > 0) {
+        var imagenFile = imagenInput.files[0];
+        var imagenPath = 'productos/' + imagenFile.name;
+        var storageRef = storage.ref(imagenPath);
+
+        // Subir la imagen al almacenamiento de Firebase
+        storageRef.put(imagenFile)
+          .then(function(snapshot) {
+            // Obtener la URL de descarga de la imagen
+            return storageRef.getDownloadURL();
+          })
+          .then(function(url) {
+            var productoActualizado = {
+              nombre: nombre,
+              descripcion: descripcion,
+              precio: precio,
+              imagen: url
+            };
+
+            // Actualizar los datos del producto en la base de datos
+            return db.collection(coleccion).doc(id).update(productoActualizado);
+          })
+          .then(function() {
+            console.log('Producto actualizado con éxito');
+            formulario.remove();
+            updateProductosList();
+          })
+          .catch(function(error) {
+            console.error('Error al actualizar el producto:', error);
+          });
+      } else {
+        // Si no se seleccionó una imagen, solo actualizar los demás datos del producto
+        var productoActualizado = {
+          nombre: nombre,
+          descripcion: descripcion,
+          precio: precio
+        };
+
+        db.collection(coleccion).doc(id).update(productoActualizado)
+          .then(function() {
+            console.log('Producto actualizado con éxito');
+            formulario.remove();
+            updateProductosList();
+          })
+          .catch(function(error) {
+            console.error('Error al actualizar el producto:', error);
+          });
+      }
+    }
+
+    function eliminarProducto(id, coleccion) {
+      db.collection(coleccion).doc(id).delete()
+        .then(function() {
+          console.log('Producto eliminado con éxito');
+          updateProductosList();
+        })
+        .catch(function(error) {
+          console.error('Error al eliminar el producto:', error);
+        });
+    }
+  </script>
+</body>
+</html>

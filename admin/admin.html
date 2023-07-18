@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pizzería - Administrador</title>
+  
+  <!-- Agregar enlace a Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesAdmin.css">
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-storage.js"></script>
+
+  
+</head>
+<body>
+  <header>
+    <!-- Agregar clase 'fixed-top' para hacer la barra de navegación fija -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <ul class="navbar-nav mx-auto">
+        
+        <li class="nav-item"><a class="nav-link" href="../admin/edit.html">Editar Productos</a></li>
+      
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <section id="agregar-pizza">
+        <h2>Agregar Pizza</h2>
+        <form id="form-pizza">
+          <div class="form-group">
+            <label for="nombre-pizza">Nombre:</label>
+            <input type="text" id="nombre-pizza" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="descripcion-pizza">Descripción:</label>
+            <textarea id="descripcion-pizza" class="form-control" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="precio-pizza">Precio:</label>
+            <input type="number" id="precio-pizza" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="imagen-pizza">Imagen:</label>
+            <input type="file" id="imagen-pizza" accept="image/*" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar Pizza</button>
+        </form>
+        <div id="mensaje-confirmacion1" class="alert alert-success" style="display: none;"></div>
+      </section>
+
+      <hr>
+
+      <section id="agregar-bebida">
+        <h2>Agregar Bebida</h2>
+        <form id="form-bebida">
+          <div class="form-group">
+            <label for="nombre-bebida">Nombre:</label>
+            <input type="text" id="nombre-bebida" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="descripcion-bebida">Descripción:</label>
+            <textarea id="descripcion-bebida" class="form-control" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="precio-bebida">Precio:</label>
+            <input type="number" id="precio-bebida" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="imagen-bebida">Imagen:</label>
+            <input type="file" id="imagen-bebida" accept="image/*" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Agregar Bebida</button>
+        </form>
+        <div id="mensaje-confirmacion2" class="alert alert-success" style="display: none;"></div>
+      </section>
+
+      <hr>
+
+      <section id="productos">
+        <h2>Productos</h2>
+        <div id="lista-pizzas">
+          <h3>Pizzas</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                 <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-pizzas"></tbody>
+          </table>
+        </div>
+        <div id="lista-bebidas">
+          <h3>Bebidas</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Imagen</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-bebidas"></tbody>
+          </table>
+        </div>
+      </section>
+
+      
+    </div>
+  </main>
+
+  <footer class="container text-center">
+    <p>© 2023 Pizzería. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Agregar los scripts de Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="../config.js"></script>
+
+
+  <script>
+  
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Obtener una referencia a la base de datos
+    var db = firebase.firestore();
+
+    // Obtener una referencia al almacenamiento de Firebase
+    var storage = firebase.storage();
+
+    // Escuchar el evento 'DOMContentLoaded' para cargar los datos de la base de datos
+    document.addEventListener('DOMContentLoaded', function() {
+      updatePizzaList();
+      updateBebidaList();
+    });
+
+    // Escuchar el evento de envío del formulario para agregar una pizza
+    document.getElementById('form-pizza').addEventListener('submit', function(event) {
+      event.preventDefault(); // Evitar el comportamiento predeterminado del envío del formulario
+
+      // Obtener los valores del formulario
+      var nombrePizza = document.getElementById('nombre-pizza').value;
+      var descripcionPizza = document.getElementById('descripcion-pizza').value;
+      var precioPizza = parseFloat(document.getElementById('precio-pizza').value);
+      var imagenPizzaFile = document.getElementById('imagen-pizza').files[0];
+      var mensajeConfirmacion = document.getElementById('mensaje-confirmacion1');
+
+      // Subir la imagen de la pizza a Firebase Storage
+      var storageRef = storage.ref();
+      var pizzaImagesRef = storageRef.child('pizza-images/' + imagenPizzaFile.name);
+      pizzaImagesRef.put(imagenPizzaFile)
+        .then(function(snapshot) {
+          console.log('Imagen de pizza subida con éxito');
+
+          // Obtener la URL de descarga de la imagen de pizza
+          return pizzaImagesRef.getDownloadURL();
+        })
+        .then(function(imagenUrl) {
+          // Guardar los datos de la pizza en la colección 'menu-pizzas' de Firestore
+          return db.collection('menu-pizzas').add({
+            nombre: nombrePizza,
+            descripcion: descripcionPizza,
+            precio: precioPizza,
+            imagen: imagenUrl
+          });
+        })
+        .then(function(docRef) {
+          console.log('Pizza agregada con ID:', docRef.id);
+
+          // Restablecer los campos del formulario después de agregar la pizza
+          document.getElementById('form-pizza').reset();
+          document.getElementById('mensaje-confirmacion1').textContent = 'Pizza agregada con éxito';
+          document.getElementById('mensaje-confirmacion1').style.display = 'block';
+            setTimeout(function() {
+            // Ocultar el mensaje de confirmación después de 3 segundos
+            mensajeConfirmacion.style.display = 'none';
+            }, 3000);
+          // Actualizar la lista de pizzas en tiempo real
+          updatePizzaList();
+        })
+        .catch(function(error) {
+          console.error('Error al agregar la pizza:', error);
+        });
+    });
+
+    // Escuchar el evento de envío del formulario para agregar una bebida
+    document.getElementById('form-bebida').addEventListener('submit', function(event) {
+      event.preventDefault(); // Evitar el comportamiento predeterminado del envío del formulario
+
+      // Obtener los valores del formulario
+      var descripcionBebida = document.getElementById('descripcion-bebida').value;
+      var nombreBebida = document.getElementById('nombre-bebida').value;
+      var precioBebida = parseFloat(document.getElementById('precio-bebida').value);
+      var imagenBebidaFile = document.getElementById('imagen-bebida').files[0];
+      var mensajeConfirmacion = document.getElementById('mensaje-confirmacion2');
+
+      // Subir la imagen de la bebida a Firebase Storage
+      var storageRef = storage.ref();
+      var bebidaImagesRef = storageRef.child('bebida-images/' + imagenBebidaFile.name);
+      bebidaImagesRef.put(imagenBebidaFile)
+        .then(function(snapshot) {
+          console.log('Imagen de bebida subida con éxito');
+
+          // Obtener la URL de descarga de la imagen de bebida
+          return bebidaImagesRef.getDownloadURL();
+        })
+        .then(function(imagenUrl) {
+          // Guardar los datos de la bebida en la colección 'menu-bebidas' de Firestore
+          return db.collection('menu-bebidas').add({
+            nombre: nombreBebida,
+            descripcion: descripcionBebida,
+            precio: precioBebida,
+            imagen: imagenUrl
+            
+          });
+        })
+        .then(function(docRef) {
+          console.log('Bebida agregada con ID:', docRef.id);
+
+          // Restablecer los campos del formulario después de agregar la bebida
+          document.getElementById('form-bebida').reset();
+          document.getElementById('mensaje-confirmacion2').textContent = 'Bebida agregada con éxito';
+          document.getElementById('mensaje-confirmacion2').style.display = 'block';
+          setTimeout(function() {
+          // Ocultar el mensaje de confirmación después de 3 segundos
+          mensajeConfirmacion.style.display = 'none';
+    }, 3000);
+
+          // Actualizar la lista de bebidas en tiempo real
+          updateBebidaList();
+        })
+        .catch(function(error) {
+          console.error('Error al agregar la bebida:', error);
+        });
+    });
+
+    function updatePizzaList() {
+      var tablaPizzas = document.getElementById('tabla-pizzas');
+      // Eliminar las filas existentes en la tabla de pizzas
+      while (tablaPizzas.firstChild) {
+        tablaPizzas.removeChild(tablaPizzas.firstChild);
+      }
+
+      // Obtener todas las pizzas del menú y agregarlas a la tabla
+      db.collection('menu-pizzas').get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var pizza = doc.data();
+            var fila = createPizzaRow(pizza);
+            tablaPizzas.appendChild(fila);
+          });
+        })
+        .catch(function(error) {
+          console.error('Error al obtener las pizzas:', error);
+        });
+    }
+
+    function updateBebidaList() {
+      var tablaBebidas = document.getElementById('tabla-bebidas');
+      // Eliminar las filas existentes en la tabla de bebidas
+      while (tablaBebidas.firstChild) {
+        tablaBebidas.removeChild(tablaBebidas.firstChild);
+      }
+
+      // Obtener todas las bebidas del menú y agregarlas a la tabla
+      db.collection('menu-bebidas').get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            var bebida = doc.data();
+            var fila = createBebidaRow(bebida);
+            tablaBebidas.appendChild(fila);
+          });
+        })
+        .catch(function(error) {
+          console.error('Error al obtener las bebidas:', error);
+        });
+    }
+
+    function createPizzaRow(pizza) {
+      var fila = document.createElement('tr');
+
+      var nombreCelda = document.createElement('td');
+      nombreCelda.textContent = pizza.nombre;
+      fila.appendChild(nombreCelda);
+
+      var descripcionCelda = document.createElement('td');
+      descripcionCelda.textContent = pizza.descripcion;
+      fila.appendChild(descripcionCelda);
+
+      var precioCelda = document.createElement('td');
+      precioCelda.textContent = pizza.precio;
+      fila.appendChild(precioCelda);
+
+      var imagenCelda = document.createElement('td');
+      var imagen = document.createElement('img');
+      imagen.src = pizza.imagen;
+      imagenCelda.appendChild(imagen);
+      fila.appendChild(imagenCelda);
+
+      return fila;
+    }
+
+    function createBebidaRow(bebida) {
+      var fila = document.createElement('tr');
+
+      var nombreCelda = document.createElement('td');
+      nombreCelda.textContent = bebida.nombre;
+      fila.appendChild(nombreCelda);
+
+      var descripcionCelda = document.createElement('td');
+      descripcionCelda.textContent = bebida.descripcion;
+      fila.appendChild(descripcionCelda);
+
+      var precioCelda = document.createElement('td');
+      precioCelda.textContent = bebida.precio;
+      fila.appendChild(precioCelda);
+
+      var imagenCelda = document.createElement('td');
+      var imagen = document.createElement('img');
+      imagen.src = bebida.imagen;
+      imagenCelda.appendChild(imagen);
+      fila.appendChild(imagenCelda);
+
+      return fila;
+    }
+  </script>
+</body>
+</html>

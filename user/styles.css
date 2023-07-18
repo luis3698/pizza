@@ -1,0 +1,238 @@
+
+/* Estilos adicionales */
+body {
+padding-top: 20px;
+background-color: #f0b000; /* Color de fondo sugerido */
+}
+
+.jumbotron {
+background-color: #f0b000;
+}
+
+/* Estilos para el carrusel */
+#carrusel-fotos {
+margin-top: 20px;
+margin-left: 0;
+margin-right: 0;
+padding: 0;
+}
+
+#carrusel-fotos .carousel-inner .carousel-item {
+width: 100%;
+}
+
+#carrusel-fotos .carousel-inner .carousel-item img {
+width: 100%;
+height: auto;
+}
+
+/* Resto del CSS... */
+
+
+#suscripcion {
+margin-top: 20px;
+}
+
+#menu-pizzas {
+margin-top: 40px;
+margin-bottom: 40px;
+}
+
+#menu-bebidas {
+margin-bottom: 40px;
+}
+
+#ubicacion {
+margin-bottom: 40px;
+}
+
+#mision-vision-valores {
+margin-bottom: 40px;
+}
+
+.social-buttons {
+margin-top: 20px;
+}
+
+.card-img-top {
+height: 200px;
+}
+
+/* Personalización de los enlaces de navegación */
+/* Estilos para la barra de navegación */
+/* Estilos para la barra de navegación */
+.navbar.navbar-light {
+background-color: #4c5661 !important; /* Color de fondo de la barra de navegación (azul en este caso) */
+}
+
+.navbar .navbar-nav .nav-item {
+margin-right: 10px;
+}
+
+.navbar .nav-link {
+color: #ffffff !important; /* Color del texto de los enlaces de navegación (blanco en este caso) */
+font-weight: bold;
+}
+
+.navbar .nav-link:hover {
+color: #ffffff !important; /* Color del texto de enlaces de navegación en hover (blanco en este caso) */
+opacity: 0.8; /* Opacidad reducida al hacer hover */
+}
+
+
+/* Estilos para las tarjetas de menú */
+.card {
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+transition: transform 0.3s;
+background-color: #eb8f05; /* Color de fondo de las tarjetas (blanco en este caso) */
+}
+
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Cambio de sombra al hacer hover */
+}
+
+.precio {
+font-size: 1.2rem;
+font-weight: bold;
+color: #2d333a;
+}
+
+/* Resto del CSS... */
+
+
+/* Estilos para los botones de redes sociales */
+.btn-primary {
+background-color: #2b3136;
+border-color: #2b3136;
+}
+
+.btn-primary:hover {
+background-color: #2b3136;
+border-color: #2b3136;
+}
+
+/* Estilos para el botón de WhatsApp */
+.btn-success {
+background-color: #25d366;
+border-color: #25d366;
+}
+
+.btn-success:hover {
+background-color: #128c7e;
+border-color: #128c7e;
+}
+
+/* Estilos para los títulos de sección */
+h2 {
+color: #2b3136;
+margin-bottom: 20px;
+}
+
+/* Estilos para los subtítulos de Misión, Visión y Valores */
+h3 {
+color: #2b3136;
+}
+
+/* Estilos para los párrafos de Misión, Visión y Valores */
+#mision-texto,
+#vision-texto,
+#valores-texto {
+text-align: justify;
+}
+
+/* Estilos para las imágenes del carrusel */
+.carousel-inner img {
+height: 400px;
+object-fit: cover;
+}
+
+/* Estilos para el mapa de Google */
+iframe {
+width: 100%;
+height: 450px;
+border: 0;
+}
+
+/* Estilos para el footer */
+.footer {
+padding-top: 20px;
+padding-bottom: 20px;
+background-color: #00000000;
+text-align: center;
+}
+
+/* Estilos para los enlaces de redes sociales en el footer */
+.footer .social-buttons .btn {
+margin-right: 10px;
+background-color: #2b3136;
+border-color: #2b3136;
+}
+
+.footer .social-buttons .btn:hover {
+background-color: #1d2124; /* Cambia el color en hover */
+border-color: #1d2124; /* Cambia el color en hover */
+}
+
+/* Estilos adicionales para el contenido del footer */
+.footer h4 {
+margin-bottom: 10px;
+}
+
+.footer p {
+margin-bottom: 5px;
+}
+
+.footer hr {
+margin-top: 20px;
+margin-bottom: 20px;
+border-color: #16181a; /* Cambia el color de la línea horizontal */
+}
+/* Estilos para el modo oscuro */
+#modo-oscuro-btn {
+background-color: transparent;
+border: none;
+}
+
+#modo-oscuro-btn:focus {
+outline: none; /* Quitamos el resaltado azul al hacer foco en el botón */
+}
+
+/* Estilos para los iconos de sol y luna */
+.fas.fa-sun,
+.fas.fa-moon {
+font-size: 1.5rem; /* Ajustamos el tamaño del icono */
+}
+
+/* Estilos adicionales para el modo oscuro */
+.modo-oscuro #modo-oscuro-btn {
+color: #ffffff; /* Color del texto en modo oscuro */
+}
+
+.modo-oscuro #modo-oscuro-btn:hover {
+color: #dddddd; /* Color del texto en hover en modo oscuro */
+}
+
+.modo-oscuro {
+background-color: #1a1a1a; /* Color de fondo para el modo oscuro */
+color: #ffffff; /* Color del texto para el modo oscuro */
+}
+
+.modo-oscuro .jumbotron,
+.modo-oscuro .card {
+background-color: #2a2a2a; /* Otros elementos que cambian de color en modo oscuro */
+}
+
+/* Estilos para todos los textos en modo oscuro */
+.modo-oscuro h1,
+.modo-oscuro h2,
+.modo-oscuro h3,
+.modo-oscuro h4,
+.modo-oscuro h5,
+.modo-oscuro h6,
+.modo-oscuro p,
+.modo-oscuro a,
+.modo-oscuro li {
+color: #ffffff; /* Color blanco para todos los textos */
+}
+

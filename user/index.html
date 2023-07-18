@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pizzería</title>
+
+  <!-- Agregar enlace a Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+<!-- Código de seguimiento de Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-TU-CODIGO-DE-SEGUIMIENTO"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-TU-CODIGO-DE-SEGUIMIENTO');
+</script>
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.8.0/firebase-firestore.js"></script>
+  <script src="Config.js"></script> <!-- Agrega el script de la configuración de Firebase desde la variable de entorno -->
+
+
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top"> <!-- Añadimos la clase "fixed-top" aquí -->
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="#landing-page">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#menu-pizzas">Menú</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ubicacion">Ubicación</a></li>
+        <li class="nav-item"><a class="nav-link" href="https://wa.me/123456789">Contacto por WhatsApp</a></li>
+       
+      </ul>
+      <button id="modo-oscuro-btn" class="btn btn-dark">
+        <i class="fas fa-sun"></i> <!-- Icono para el modo claro (sol) -->
+        <i class="fas fa-moon d-none"></i> <!-- Icono para el modo oscuro (luna) - inicialmente oculto -->
+      
+      </button>
+      
+      
+    </nav>
+  </header>
+  
+
+  <main>
+    <section id="landing-page" class="jumbotron text-center">
+      <h1 class="display-4">Bienvenido a la Pizzería</h1>
+      <p class="lead">La mejor pizza de la ciudad</p>
+      <!-- Contenido atractivo de la landing page -->
+      <div id="carrusel-fotos" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="../img/pizza1.png" alt="Pizza 1" class="d-block w-100 img-fluid">
+          </div>
+          <div class="carousel-item">
+            <img src="../img/pizza2.png" alt="Pizza 2" class="d-block w-100 img-fluid">
+          </div>
+          <div class="carousel-item">
+            <img src="../img/pizza3.png" alt="Pizza 3" class="d-block w-100 img-fluid">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="menu-pizzas" class="container text-center">
+      <h2>Menú de Pizzas</h2>
+      <div class="row" id="menu-pizzas-container"></div> <!-- Agregamos un contenedor con un ID para insertar las tarjetas de pizzas -->
+    </section>
+
+    <section id="menu-bebidas" class="container text-center">
+      <h2>Menú de Bebidas</h2>
+      <div class="row" id="menu-bebidas-container"></div> <!-- Agregamos un contenedor con un ID para insertar las tarjetas de bebidas -->
+    </section>
+
+    <section id="ubicacion" class="container text-center">
+      <h2>Ubicación</h2>
+      <p>Dirección: Av. Principal 123, Ciudad, País</p>
+      <p>Teléfono: 123-456-7890</p>
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d0.001442240725888694!2d-73.173672!3d6.533843!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e30384d82e071a9%3A0x5c10134102e1f48a!2sUbicaci%C3%B3n%20Espec%C3%ADfica!5e0!3m2!1sen!2sus!4v1626411631147!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+
+      <div>
+      <a href="https://wa.me/3205574749" class="btn btn-success">Contacto por WhatsApp</a>
+    </div>
+    </section>
+
+    <section id="mision-vision-valores" class="container text-center">
+      <h2>Sobre nosostros</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <h3>Misión</h3>
+          <p id="mision-texto">Crear y ofrecer las mejores pizzas, utilizando ingredientes frescos y de alta calidad, combinados con técnicas artesanales y recetas tradicionales, para satisfacer los gustos y necesidades de nuestros clientes, generando momentos de deleite y satisfacción en cada bocado.</p>
+        </div>
+        <div class="col-md-4">
+          <h3>Visión</h3>
+          <p id="vision-texto">Ser la pizzería líder a nivel nacional, reconocida por la calidad de nuestros productos y la excelencia en el servicio, brindando una experiencia única a nuestros clientes.</p>
+        </div>
+        <div class="col-md-4">
+          <h3>Valores</h3>
+          <p id="valores-texto">Calidad: Nos comprometemos a utilizar ingredientes frescos y de primera calidad en todas nuestras pizzas, garantizando el sabor excepcional en cada porción que servimos.
+
+            Pasión: Nos apasiona la pizza y nos esforzamos por perfeccionar constantemente nuestras recetas y técnicas, brindando un producto excepcional y una experiencia inigualable a nuestros clientes.
+            
+           </p>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+
+  <footer class="footer container text-center">
+  <div class="row">
+    <div class="col-md-6">
+      <h4>Contacto</h4>
+      <p>Dirección: Av. Principal 123, Ciudad, País</p>
+      <p>Teléfono: 123-456-7890</p>
+      <p>Email: info@pizzeria.com</p>
+      <p>Horario de atención:</p>
+      <p>Lunes a Viernes: 11:00 AM - 10:00 PM</p>
+      <p>Sábados y Domingos: 12:00 PM - 9:00 PM</p>
+    </div>
+    <div class="col-md-6">
+      <h4>Síguenos en redes sociales</h4>
+      <div class="social-buttons">
+        <a href="https://www.facebook.com/" class="btn btn-primary" target="_blank">Facebook</a>
+        <a href="https://www.twitter.com/" class="btn btn-primary" target="_blank">Twitter</a>
+        <a href="https://www.instagram.com/" class="btn btn-primary" target="_blank">Instagram</a>
+      </div>
+      <!-- Agrega más contenido adicional si es necesario -->
+    </div>
+  </div>
+  <hr>
+  <p>© 2023 Pizzería. Todos los derechos reservados.</p>
+</footer>
+
+
+  <!-- Agregar los scripts de Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="../config.js"></script>
+  <script>
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Obtener una referencia a la base de datos
+    var db = firebase.firestore();
+
+  
+     // Función para alternar el modo de color
+     function alternarModoColor() {
+    var body = document.body;
+    body.classList.toggle('modo-oscuro');
+
+    // Obtener los elementos de los iconos
+    var iconoSol = document.querySelector('.fa-sun');
+    var iconoLuna = document.querySelector('.fa-moon');
+
+    // Alternar la visibilidad de los iconos según el modo
+    iconoSol.classList.toggle('d-none');
+    iconoLuna.classList.toggle('d-none');
+  }
+
+  // EventListener para el botón de modo oscuro
+  document.getElementById('modo-oscuro-btn').addEventListener('click', function() {
+    alternarModoColor();
+  });
+    function mostrarMenuPizzas() {
+      db.collection('menu-pizzas').get().then(function(querySnapshot) {
+        var menuPizzasContainer = document.getElementById('menu-pizzas-container');
+        menuPizzasContainer.innerHTML = ''; // Limpiar el contenido actual del contenedor
+
+        querySnapshot.forEach(function(doc) {
+          var pizza = doc.data();
+
+          // Obtener los campos de la pizza
+          var imagen = pizza.imagen;
+          var nombre = pizza.nombre;
+          var descripcion = pizza.descripcion;
+          var precio = pizza.precio;
+
+          // Crear el elemento de la tarjeta de pizza y agregar los datos
+          var pizzaCard = document.createElement('div');
+          pizzaCard.className = 'col-md-3 mb-4'; // Agregar clase "col-md-4" y "mb-4" para organizar en columnas y margen inferior
+          pizzaCard.innerHTML = `
+            <div class="card">
+              <img src="${imagen}" alt="${nombre}" class="card-img-top">
+              <div class="card-body">
+                <h3 class="card-title">${nombre}</h3>
+                <p class="card-text">${descripcion}</p>
+                <p class="card-text precio">$${precio}</p>
+              </div>
+            </div>
+          `;
+
+          // Agregar la tarjeta de pizza al contenedor en la página web
+          menuPizzasContainer.appendChild(pizzaCard);
+        });
+      });
+    }
+
+    function mostrarMenuBebidas() {
+  db.collection('menu-bebidas').get().then(function(querySnapshot) {
+    var menuBebidasContainer = document.getElementById('menu-bebidas-container');
+    menuBebidasContainer.innerHTML = ''; // Limpiar el contenido actual del contenedor
+
+    querySnapshot.forEach(function(doc) {
+      var bebida = doc.data();
+
+      // Obtener los campos de la bebida
+      var imagen = bebida.imagen;
+      var nombre = bebida.nombre;
+      var descripcion = bebida.descripcion;
+      var precio = bebida.precio;
+
+      // Crear el elemento de la tarjeta de bebida y agregar los datos
+      var bebidaCard = document.createElement('div');
+      bebidaCard.className = 'col-md-3 mb-4'; // Agregar clase "col-md-4" y "mb-4" para organizar en columnas y margen inferior
+      bebidaCard.innerHTML = `
+        <div class="card">
+          <img src="${imagen}" alt="${nombre}" class="card-img-top">
+          <div class="card-body">
+            <h3 class="card-title">${nombre}</h3>
+            <p class="card-text">${descripcion}</p>
+            <p class="card-text precio">$${precio}</p>
+          </div>
+        </div>
+      `;
+
+      // Agregar la tarjeta de bebida al contenedor en la página web
+      menuBebidasContainer.appendChild(bebidaCard);
+    });
+  });
+}
+
+
+    function mostrarMisionVisionValores() {
+      db.collection('mision-vision-valores').get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          var datos = doc.data();
+
+          // Obtener los campos de Misión, Visión y Valores
+          var mision = datos.mision;
+          var vision = datos.vision;
+          var valores = datos.valores;
+
+          // Mostrar los datos en la página
+          document.getElementById('mision-texto').textContent = mision;
+          document.getElementById('vision-texto').textContent = vision;
+          document.getElementById('valores-texto').textContent = valores;
+        });
+      });
+    }
+
+    // Inicializar la función de mostrar los datos al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      mostrarMenuPizzas();
+      mostrarMenuBebidas();
+      mostrarMisionVisionValores();
+    });
+
+    // Agregar listeners para actualizaciones en tiempo real
+    db.collection('menu-pizzas').onSnapshot(function(snapshot) {
+      mostrarMenuPizzas();
+    });
+
+    db.collection('menu-bebidas').onSnapshot(function(snapshot) {
+      mostrarMenuBebidas();
+    });
+
+    db.collection('mision-vision-valores').onSnapshot(function(snapshot) {
+      mostrarMisionVisionValores();
+    });
+  </script>
+   
+</body>
+</html>
